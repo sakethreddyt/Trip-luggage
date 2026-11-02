@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>TripGuard V6.2 – Passenger-wise scanned luggage</title>
+<meta name="theme-color" content="#14213d"><meta name="application-name" content="TripGuard V6.2"><meta name="description" content="TripGuard helps groups manage journeys, passengers and luggage with QR stickers, offline storage and Drive backup files.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🧳%3C/text%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Figtree:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f4f1ec;--card:#fff;--tx:#14213d;--mu:#6b7280;--pr:#14213d;--ac:#f2a516;--ok:#117a5a;--wn:#b45309;--bd:#14213d;--bad:#c1272d;--soft:#ece7df;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){color-scheme:dark;--bg:#0e1424;--card:#18213a;--tx:#eef0f6;--mu:#97a0b8;--pr:#f2a516;--bd:#f2a516;--soft:#222c48;--ok:#3ccf9f;--wn:#f2a516;--bad:#ff6b70}}
+:root[data-theme=dark]{color-scheme:dark;--bg:#0e1424;--card:#18213a;--tx:#eef0f6;--mu:#97a0b8;--pr:#f2a516;--bd:#f2a516;--soft:#222c48;--ok:#3ccf9f;--wn:#f2a516;--bad:#ff6b70}
+html,body{height:auto;margin:0}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{background:var(--bg);color:var(--tx);font:16px/1.45 Figtree,system-ui,sans-serif;padding-bottom:84px}
+main{max-width:720px;margin:0 auto;padding:14px}
+h1,h2,h3{font-family:'Bricolage Grotesque',Figtree,sans-serif;margin:0}
+h1{font-size:28px;font-weight:800}h2{font-size:21px;margin:18px 0 8px}h3{font-size:16px}
+.card{background:var(--card);border:1.5px solid var(--bd);border-radius:14px;padding:12px;margin:10px 0}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.sp{justify-content:space-between}
+.mu{color:var(--mu);font-size:14px}
+input,select,button{font:inherit;color:inherit;border:1.5px solid var(--bd);border-radius:10px;padding:9px 11px;background:var(--card);min-height:42px;max-width:100%}
+input[type=checkbox]{min-height:0;width:20px;height:20px;accent-color:var(--ok)}
+button{cursor:pointer;font-weight:700;background:var(--soft)}button.p{background:var(--ac);color:#14213d}button.d{color:var(--bad)}button.s{min-height:34px;padding:4px 10px;font-size:14px}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--ac);outline-offset:2px}
+.tag{display:inline-block;padding:2px 12px 2px 16px;font-size:13px;font-weight:700;border:1.5px solid currentColor;border-radius:4px 14px 14px 4px;position:relative}
+.tag:before{content:"";position:absolute;left:5px;top:50%;width:5px;height:5px;margin-top:-3px;border-radius:50%;background:currentColor}
+.ok{color:var(--ok)}.wn{color:var(--wn)}.bad{color:var(--bad)}.mu2{color:var(--mu)}.st{color:var(--wn)}.ld{color:var(--pr)}
+nav{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1.5px solid var(--bd);display:flex;justify-content:center;padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px));z-index:5}
+nav button{flex:1;max-width:110px;border:0;background:none;font-size:12px;padding:4px;display:flex;flex-direction:column;align-items:center;min-height:48px;border-radius:10px}
+nav button.on{background:var(--ac);color:#14213d}nav span{font-size:20px}
+.msg{border-left:6px solid;padding:10px;border-radius:8px;background:var(--soft);margin:10px 0;font-weight:500}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.lbl{border:1.5px dashed var(--mu);border-radius:8px;padding:8px;text-align:center;background:#fff;color:#000;break-inside:avoid}.lbl b{display:block;font-size:12px}
+.lbl div{display:flex;justify-content:center}
+#modal{position:fixed;inset:0;background:#000a;display:none;align-items:center;justify-content:center;z-index:9;padding:16px}
+#modal .card{text-align:center;max-width:320px;width:100%}#modal .q{background:#fff;padding:12px;display:inline-block;border-radius:8px}
+#cam{max-width:420px;margin:8px auto;border:2px solid var(--ac);border-radius:14px;overflow:hidden;min-height:120px;background:#000}#cam video{width:100%!important;display:block}
+.bar{height:8px;background:var(--soft);border-radius:4px;overflow:hidden}.bar i{display:block;height:100%;background:var(--ok)}
+.drive-status{padding:10px;border-radius:10px;background:var(--soft);font-size:14px;margin:8px 0}.drive-grid{display:grid;grid-template-columns:1fr;gap:8px}.drive-grid input,.drive-grid select{width:100%;box-sizing:border-box}.member{border-top:1px solid var(--bd);padding:9px 0}.ph{width:96px;height:96px;object-fit:cover;border-radius:10px;border:1.5px solid var(--bd);margin-top:8px;display:block}.wide{width:100%}.chk{display:flex;gap:8px;align-items:center;padding:4px 0}
+@media print{body *{visibility:hidden}#labels,#labels *{visibility:visible}#labels{position:absolute;left:0;top:0;width:100%;display:grid;grid-template-columns:repeat(3,1fr);gap:8mm}.lbl{min-height:34mm;display:flex;flex-direction:column;align-items:center;justify-content:center}.lbl img{max-width:28mm!important;height:auto!important}@page{size:A4;margin:12mm}}
+</style>
+<style id="tripguard-v62-design">
+:root{--bg:#f3f6fb;--card:#ffffff;--tx:#17243b;--mu:#68778d;--pr:#17365d;--ac:#1b8f83;--ok:#16836b;--wn:#b7791f;--bd:#dce4ef;--bad:#c2414b;--soft:#edf3f8;color-scheme:light}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){color-scheme:light;--bg:#f3f6fb;--card:#fff;--tx:#17243b;--mu:#68778d;--pr:#17365d;--ac:#1b8f83;--ok:#16836b;--wn:#b7791f;--bd:#dce4ef;--bad:#c2414b;--soft:#edf3f8}}
+:root[data-theme=dark]{color-scheme:light;--bg:#f3f6fb;--card:#fff;--tx:#17243b;--mu:#68778d;--pr:#17365d;--ac:#1b8f83;--ok:#16836b;--wn:#b7791f;--bd:#dce4ef;--bad:#c2414b;--soft:#edf3f8}
+*{box-sizing:border-box}html,body{min-height:100%;background:var(--bg)}body{font-family:Inter,"Segoe UI",Figtree,system-ui,sans-serif;color:var(--tx);padding-bottom:92px;background:linear-gradient(180deg,#eef3f9 0,#f7f9fc 240px,var(--bg) 100%)}
+main{max-width:1120px;margin:0 auto;padding:26px 22px 34px}h1{font-size:clamp(27px,3vw,36px);letter-spacing:-.035em;color:#142b49;margin:4px 0 18px}h2{font-size:20px;letter-spacing:-.02em;margin:20px 0 10px;color:#1b3555}h3{font-size:16px;letter-spacing:-.01em;color:#203957}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:18px;margin:14px 0;box-shadow:0 5px 18px rgba(29,55,87,.045)}.row{gap:10px}.mu{color:var(--mu);font-size:13px;line-height:1.5}
+input,select,button{font:inherit;border:1px solid #d2dce9;border-radius:11px;padding:10px 13px;background:#fff;color:var(--tx);min-height:44px;max-width:100%;transition:border-color .16s,box-shadow .16s,transform .16s}input:focus,select:focus{border-color:var(--ac);box-shadow:0 0 0 3px rgba(27,143,131,.13);outline:0}button{font-weight:650;background:#f5f8fb;border-color:#d8e1ec;color:#25415f}button:hover{border-color:#9db3c9;transform:translateY(-1px)}button.p{background:var(--pr);border-color:var(--pr);color:#fff}button.p:hover{background:#214a78}button.d{color:var(--bad)}button.s{min-height:34px;padding:6px 11px;font-size:13px}
+.tag{border-radius:999px;padding:4px 11px 4px 18px;font-size:12px;font-weight:700;border:1px solid currentColor}.tag:before{left:7px;width:5px;height:5px}.ok{color:#16836b}.wn{color:#a96b13}.bad{color:#bd3f4b}.mu2{color:#718096}.st{color:#8a6b29}.ld{color:#2c6f9f}
+.msg{border-left-width:4px;border-radius:12px;padding:13px 15px;background:#f3f7fb;font-size:14px}.grid{grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}.ph{width:104px;height:104px;border-radius:14px;border:1px solid var(--bd)}
+nav{position:fixed;top:0;bottom:auto;left:0;right:0;justify-content:center;gap:8px;padding:10px 18px;background:rgba(255,255,255,.94);border:0;border-bottom:1px solid #dce4ef;box-shadow:0 4px 18px rgba(22,42,68,.06);backdrop-filter:blur(14px)}nav button{flex:0 1 142px;max-width:142px;min-height:44px;flex-direction:row;justify-content:center;gap:8px;font-size:14px;padding:8px 12px;border-radius:11px;color:#50647c}nav span{font-size:18px}nav button.on{background:#e4f3f1;color:#126e65;box-shadow:inset 0 0 0 1px #b8ded8}
+#cam{max-width:560px;border:1px solid #cbd7e5;border-radius:18px;min-height:120px}#modal .card{max-width:360px}
+.scanned-section{padding:20px}.section-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:14px}.section-head h2{margin:4px 0}.eyebrow{font-size:10px;letter-spacing:.13em;font-weight:800;color:#168378}.count-pill{display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;border-radius:999px;padding:5px 11px;background:#edf2f8;color:#53667d;font-size:12px;font-weight:750}.success-pill{background:#e5f5f0;color:#147660}.passenger-scan-group{border:1px solid #e1e8f0;border-radius:14px;margin-top:12px;overflow:hidden;background:#fff}.passenger-scan-head{display:flex;align-items:center;gap:10px;padding:12px 14px;background:#f7f9fc;border-bottom:1px solid #e8edf3}.avatar{width:34px;height:34px;display:grid;place-items:center;flex:0 0 34px;border-radius:50%;background:#e1eff0;color:#176d69;font-weight:800}.passenger-name{display:flex;flex:1;flex-direction:column;gap:1px}.scanned-bag-list{padding:2px 14px}.scanned-bag-row{display:flex;align-items:center;gap:11px;padding:11px 0;border-bottom:1px solid #edf1f5}.scanned-bag-row:last-child{border-bottom:0}.bag-symbol{width:34px;height:34px;display:grid;place-items:center;border-radius:10px;background:#edf3f8;font-size:17px;flex:0 0 34px}.bag-info{display:flex;flex:1;min-width:0;flex-direction:column;gap:2px}.bag-info b{font-size:14px}.bag-info .mu{overflow-wrap:anywhere}.empty-state{text-align:center;padding:24px 12px;color:#50647c}.empty-state>span{font-size:30px;display:block;margin-bottom:8px}.empty-state p{margin:5px 0 0}
+@media(min-width:761px){body{padding-top:68px;padding-bottom:28px}main{padding-top:28px}.card{padding:20px}.scan2-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}}
+@media(max-width:760px){body{padding-bottom:calc(76px + env(safe-area-inset-bottom,0px))}main{padding:18px 13px 24px}nav{top:auto;bottom:0;left:0;right:0;gap:2px;padding:7px 5px calc(7px + env(safe-area-inset-bottom,0px));border-top:1px solid #dce4ef;border-bottom:0;box-shadow:0 -5px 20px rgba(22,42,68,.08)}nav button{flex:1 1 0;max-width:none;min-width:0;min-height:54px;flex-direction:column;gap:2px;padding:4px 1px;font-size:10px;border-radius:10px}nav span{font-size:19px;line-height:1.1}.card{padding:14px;border-radius:15px}h1{margin-bottom:14px}.section-head{gap:8px}.section-head h2{font-size:18px}.scanned-section{padding:14px}.passenger-scan-head{padding:10px}.scanned-bag-list{padding:2px 10px}.row>input,.row>select{min-width:0;flex:1 1 140px}.row button{max-width:100%}#cam{width:100%}}
+@media(max-width:390px){main{padding-left:10px;padding-right:10px}.card{padding:12px}.tag{font-size:11px;padding-right:8px}.count-pill{font-size:11px;padding:4px 8px}.passenger-scan-head{gap:7px}.avatar{width:30px;height:30px;flex-basis:30px}}
+@media print{nav{display:none!important}body{padding:0;background:#fff}main{max-width:none}}
+</style>
+
+</head><body>
+<main><div id="v"></div><div id="cam" style="display:none"></div><div id="v2"></div><p class="mu" style="text-align:center">TripGuard V6.2 · Travel & luggage management</p></main>
+<div id="modal"><div class="card"><h3 id="mt"></h3><p class="mu" id="ms"></p><div class="q" id="mq"></div><p class="mu">Press and hold the image to save it to this phone.</p><button onclick="modal.style.display='none'" class="p wide">Close</button></div></div>
+<nav id="nav"></nav>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
+<script>
+const $=s=>document.querySelector(s),e=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const uid=()=>crypto.randomUUID?crypto.randomUUID():Math.random().toString(36).slice(2)+Date.now();
+const tok=()=>Array.from(crypto.getRandomValues(new Uint8Array(16)),b=>b.toString(16).padStart(2,"0")).join("");
+let S={trip:"My journey",people:[],bags:[],stays:[],legs:[],scans:[],qrStock:[]},tab="home",act=null,sel={leg:"",cp:"dep"},msg=null,sc=null,camOn=false,last={t:"",at:0},ready=false,pendingStockToken=null;
+const DRIVE={clientId:localStorage.getItem("tg_google_client_id")||"",token:null,email:"",fileId:new URLSearchParams(location.search).get("driveFileId")||localStorage.getItem("tg_drive_file_id")||"",ownerEmail:new URLSearchParams(location.search).get("owner")||localStorage.getItem("tg_drive_owner")||"",version:null,etag:null,dirty:false,role:"",isOwner:false,lastSync:null,poll:null,busy:false};
+const idb=(m,v)=>new Promise(r=>{try{const key="s";const q=indexedDB.open("tripguard",1);q.onupgradeneeded=()=>{if(!q.result.objectStoreNames.contains("k"))q.result.createObjectStore("k")};q.onsuccess=()=>{const o=q.result.transaction("k",m==="get"?"readonly":"readwrite").objectStore("k");const x=m==="get"?o.get(key):o.put(v,key);x.onsuccess=()=>r(x.result);x.onerror=()=>r()};q.onerror=()=>r()}catch(_){r()}});
+const save=()=>{if(ready){DRIVE.dirty=true;idb("put",S);}};
+const P=i=>S.people.find(x=>x.id===i),B=i=>S.bags.find(x=>x.id===i),L=i=>S.legs.find(x=>x.id===i),Y=i=>S.stays.find(x=>x.id===i);
+const cur=()=>L(sel.leg)||S.legs[0];
+const adults=()=>S.people.filter(p=>p.type==="adult");
+function chk(l,cp){const s=S.scans.filter(x=>x.leg===l.id&&x.cp===cp),pv=new Set(s.filter(x=>x.type==="P").map(x=>x.id)),bv=new Set(s.filter(x=>x.type==="B").map(x=>x.id));
+return{pv,bv,pm:l.people.filter(i=>!pv.has(i)),bm:l.bags.filter(i=>!bv.has(i)),un:[...bv].filter(i=>!l.bags.includes(i)),st:S.bags.filter(b=>b.stay&&!l.bags.includes(b.id))}}
+function st(b){if(b.stay)return["Stored at "+((Y(b.stay)||{}).name||"stay"),"st"];const s=S.scans.filter(x=>x.type==="B"&&x.id===b.id).pop(),l=s&&L(s.leg);
+if(l)return s.cp==="dep"?["Loaded: "+l.from+" to "+l.to,"ld"]:["Unloaded at "+l.to,"ok"];return S.legs.some(l=>l.bags.includes(b.id))?["Packed","mu2"]:["Registered","mu2"]}
+const tag=(t,c)=>`<span class="tag ${c}">${e(t)}</span>`;
+function qr(el,text,size){el.innerHTML="";try{new QRCode(el,{text,width:size,height:size,correctLevel:QRCode.CorrectLevel.M})}catch(_){el.textContent="QR library not loaded. Go online once."}}
+function show(type,id){const o=type==="P"?P(id):B(id);$("#mt").textContent=type==="P"?o.name:o.label;$("#ms").textContent=type==="P"?"Adult passenger QR":(o.desc||"Luggage QR");modal.style.display="flex";qr($("#mq"),`TRIPGUARD|${type}|${o.token}`,220)}
+/* actions */
+function add(f){f();save();render()}
+function addPerson(){const n=$("#pn").value.trim();if(!n)return;add(()=>S.people.push({id:uid(),name:n,type:$("#pt").value,resp:$("#pr").value||null,token:tok()}))}
+function delPerson(i){add(()=>{S.people=S.people.filter(p=>p.id!==i);S.legs.forEach(l=>l.people=l.people.filter(x=>x!==i));if(act===i)act=null})}
+function nextQrLabel(){const nums=[...S.qrStock.map(x=>x.label),...S.bags.map(x=>x.label)].map(x=>+(String(x).match(/(\\d+)$/)||[])[1]||0);return "TG-"+String(Math.max(0,...nums)+1).padStart(3,"0")}
+function genQrStock(){const n=Math.max(1,Math.min(100,+$("#qn").value||20));add(()=>{for(let i=0;i<n;i++)S.qrStock.push({id:uid(),label:nextQrLabel(),token:tok(),status:"available",createdAt:Date.now()})});msg={c:"ok",t:`${n} unused QR stickers generated. Print them before your trip.`};render()}
+function beginBagActivation(){pendingStockToken=null;tab="scan";msg={c:"wn",t:"Start the camera and scan an unused TripGuard luggage sticker. It will open the registration form."};render();scrollTo(0,0)}
+function addBagForm(){
+ const stock=S.qrStock.find(x=>x.token===pendingStockToken&&x.status==="available");
+ if(!stock){alert("This QR sticker is no longer unused. Scan a different unused sticker; an assigned QR cannot be registered again.");pendingStockToken=null;render();return}
+ if(S.bags.some(b=>b.token===stock.token||b.stockId===stock.id)){
+  stock.status="activated";pendingStockToken=null;save();
+  alert("This QR code is already assigned to an existing bag. No duplicate bag was created.");render();return
+ }
+ const type=$("#bt").value,colour=$("#bc").value.trim(),owner=$("#bo").value||null,desc=$("#bd").value.trim(),file=$("#bp").files&&$("#bp").files[0];
+ const finish=photoData=>{const b={id:uid(),label:stock.label,token:stock.token,stockId:stock.id,owner,desc,type,colour,photo:photoData||null,stay:null};stock.status="activated";stock.activatedAt=Date.now();S.bags.push(b);pendingStockToken=null;save();render();show("B",b.id)};
+ if(file){if(file.size>4*1024*1024){alert("Please choose a photo smaller than 4 MB.");return}const reader=new FileReader();reader.onload=()=>finish(reader.result);reader.onerror=()=>alert("Could not read that photo.");reader.readAsDataURL(file)}else finish(null)
+}
+function setBag(i,k,v){B(i)[k]=v||null;save();render()}
+function descBag(i,v){B(i).desc=v;save()}
+function photo(id,inp){const f=inp.files&&inp.files[0];if(!f)return;const im=new Image(),u=URL.createObjectURL(f);im.onload=()=>{const k=Math.min(1,720/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext("2d").drawImage(im,0,0,c.width,c.height);B(id).photo=c.toDataURL("image/jpeg",0.7);URL.revokeObjectURL(u);save();msg={c:"ok",t:B(id).label+" photo saved on this device only."};render()};im.onerror=()=>{alert("Could not read that image.")};im.src=u}
+function rmPhoto(id){B(id).photo=null;save();render()}
+function delBag(i){add(()=>{S.bags=S.bags.filter(b=>b.id!==i);S.legs.forEach(l=>l.bags=l.bags.filter(x=>x!==i))})}
+function addStay(){const n=$("#sn").value.trim();if(n)add(()=>S.stays.push({id:uid(),name:n}))}
+function addLeg(){const f=$("#lf").value.trim(),t=$("#lt").value.trim();if(!f||!t)return;add(()=>{const l={id:uid(),from:f,to:t,mode:$("#lm").value,kind:$("#lk").value,people:S.people.map(p=>p.id),bags:S.bags.filter(b=>!b.stay).map(b=>b.id)};S.legs.push(l);sel.leg=l.id})}
+function delLeg(i){add(()=>{S.legs=S.legs.filter(l=>l.id!==i);S.scans=S.scans.filter(s=>s.leg!==i)})}
+function tog(i,k,id,on){const l=L(i);l[k]=on?[...new Set([...l[k],id])]:l[k].filter(x=>x!==id);save();render()}
+function collect(id,leg){const b=B(id);b.stay=null;if(leg&&!L(leg).bags.includes(id))L(leg).bags.push(id);msg={c:"ok",t:`${b.label} collected from storage${leg?" and added to this leg":""}.`};save();render()}
+/* scanning */
+function rec(type,id,by){const l=cur();S.scans.push({leg:l.id,cp:sel.cp,type,id,by:by||null,t:Date.now()});save()}
+function dup(type,id){const l=cur();return S.scans.some(s=>s.leg===l.id&&s.cp===sel.cp&&s.type===type&&s.id===id)}
+function handle(text){
+ const m=String(text).trim().split("|");
+ if(m[0]!=="TRIPGUARD"||m.length!==3||!"PB".includes(m[1])){msg={c:"bad",t:"Not a TripGuard QR code."};return render()}
+ if(m[1]==="B"){
+  // Resolve every inventory token before registration. An activated sticker must
+  // never be offered as a new bag again; it remains the QR identity of its bag.
+  const stock=S.qrStock.find(x=>x.token===m[2]);
+  if(stock&&stock.status==="available"){
+   pendingStockToken=stock.token;
+   msg={c:"ok",t:`Unused sticker ${stock.label} scanned. Add the bag details and photo to activate it.`};
+   if(camOn)cam(false);tab="bags";render();scrollTo(0,0);return
+  }
+  if(stock&&stock.status==="activated"){
+   const existing=S.bags.find(x=>x.stockId===stock.id||x.token===stock.token);
+   if(existing){
+    pendingStockToken=null;
+    if(!cur()){
+     msg={c:"wn",t:`${stock.label} is already assigned to ${existing.label}. It cannot be registered as another bag. Create/select a trip leg to scan it at a checkpoint.`};
+     return render()
+    }
+    if(!act){
+     msg={c:"wn",t:`${stock.label} is already assigned to ${existing.label}. No new bag was created. Choose or scan the responsible adult to verify this existing bag.`};
+     if(existing.photo)msg.i=existing.photo;
+     return render()
+    }
+    markBag(existing.id,act);
+    if(existing.photo&&msg)msg.i=existing.photo;
+    return render()
+   }
+   pendingStockToken=null;
+   msg={c:"bad",t:`${stock.label} was already activated, but its bag record is missing. This sticker cannot be reused. Retire it and use an unused sticker.`};
+   return render()
+  }
+ }
+ if(!cur()){msg={c:"bad",t:"Create a trip leg before scanning passenger or registered luggage QRs. Unused QR stickers can be registered without a leg."};return render()}
+ if(m[1]==="P"){const p=S.people.find(x=>x.token===m[2]);if(!p)msg={c:"bad",t:"Unknown passenger QR. It is not in this trip on this device."};
+ else{act=p.id;if(dup("P",p.id))msg={c:"wn",t:`${p.name} was already scanned here. Count unchanged.`};else{rec("P",p.id);msg={c:"ok",t:`${p.name} is present. Now scan their bags.`}}}}
+ else{const b=S.bags.find(x=>x.token===m[2]);if(!b)msg={c:"bad",t:"This QR is not in the unused inventory or registered luggage for this trip."};
+ else if(!act)msg={c:"wn",t:"Scan or choose an adult first, so the bag gets an owner."};
+ else{markBag(b.id,act);if(msg&&b.photo)msg.i=b.photo}}render()}
+function markBag(id,by,force){const b=B(id),a=P(by),l=cur();
+if(b.stay&&!force){msg={c:"wn",t:`${b.label} is stored at ${(Y(b.stay)||{}).name}. Collect it before putting it on this leg.`,b:["Collect and add to this leg",`collect('${id}','${l.id}');`]};return}
+if(b.owner&&b.owner!==by&&!force){msg={c:"wn",t:`${b.label} belongs to ${(P(b.owner)||{}).name}, not ${a.name}.`,b:[`Reassign to ${a.name}`,`B('${id}').owner='${by}';markBag('${id}','${by}',true);render()`]};return}
+if(!b.owner)b.owner=by;
+if(dup("B",id)){msg={c:"wn",t:`${b.label} was already scanned here. Count unchanged.`};return}
+rec("B",id,by);const ex=l.bags.includes(id);msg={c:ex?"ok":"wn",t:ex?`${b.label} verified for ${a.name}.`:`${b.label} verified, but it was not planned for this leg. Check the Trip tab.`}}
+function manual(type,id){if(dup(type,id)){msg={c:"wn",t:"Already verified here."};return render()}
+if(type==="P"){rec("P",id,"manual");msg={c:"ok",t:`${P(id).name} marked present by hand.`}}else{const b=B(id);if(b.stay){msg={c:"wn",t:"This bag is stored. Collect it first."};return render()}rec("B",id,"manual");msg={c:"ok",t:`${b.label} marked by hand.`}}save();render()}
+async function cam(on){
+ if(on&&!camOn){
+  if(!window.isSecureContext||!navigator.mediaDevices?.getUserMedia){msg={c:"bad",t:"Camera access requires the actual HTTPS GitHub Pages website. Open the https://sakethreddyt.github.io/... address directly in Chrome, not a WhatsApp preview or a downloaded HTML file."};render();return}
+  if(typeof Html5Qrcode==="undefined"){msg={c:"bad",t:"The QR scanner library has not loaded. Connect to the internet, reload TripGuard, and try again. You can still paste the QR text manually."};render();return}
+  $("#cam").style.display="block";
+  try{
+   sc=new Html5Qrcode("cam",{verbose:false});
+   const config={fps:10,qrbox:(vw,vh)=>{const z=Math.max(180,Math.min(260,Math.floor(Math.min(vw,vh)*0.72)));return{width:z,height:z}},aspectRatio:1.0,disableFlip:false};
+   try{await sc.start({facingMode:"environment"},config,t=>{const n=Date.now();if(t===last.t&&n-last.at<2500)return;last={t,at:n};handle(t)},()=>{});}
+   catch(firstError){
+    const devices=await Html5Qrcode.getCameras();
+    if(!devices?.length)throw firstError;
+    const rear=devices.find(d=>/back|rear|environment/i.test(d.label))||devices[devices.length-1];
+    await sc.start(rear.id,config,t=>{const n=Date.now();if(t===last.t&&n-last.at<2500)return;last={t,at:n};handle(t)},()=>{});
+   }
+   camOn=true;msg={c:"ok",t:"Camera started. Point it steadily at a TripGuard QR sticker."};$("#cam").scrollIntoView({block:"nearest"});
+  }catch(err){
+   const detail=String(err?.message||err||"").slice(0,140);
+   msg={c:"bad",t:"TripGuard could not start the camera. Check Chrome site settings → Camera → Allow for sakethreddyt.github.io, close other camera apps, reload the page, and try again. If it still fails, use manual QR text entry. "+(detail?"Details: "+detail:"")};
+   try{if(sc){await sc.clear()}}catch(_){}camOn=false;sc=null;
+  }
+ }else if(!on&&sc){try{await sc.stop();await sc.clear()}catch(_){}camOn=false;sc=null}
+ if(tab==="scan")render()
+}
+/* views */
+const V={
+home(){const a=adults().length,c=S.people.length-a,s=S.bags.filter(b=>b.stay).length;
+return`<div class="row sp"><h1>TripGuard</h1><span class="tag ok">V6</span></div><div class="card"><label class="mu">Trip name</label><input class="wide" value="${e(S.trip)}" onchange="S.trip=this.value;save()"></div>
+<div class="grid"><div class="card"><h1>${a}</h1><span class="mu">adults</span></div><div class="card"><h1>${c}</h1><span class="mu">children</span></div><div class="card"><h1>${S.bags.length}</h1><span class="mu">bags</span></div><div class="card"><h1>${s}</h1><span class="mu">stored at stays</span></div></div>
+<div class="msg" style="border-color:var(--ac)">TripGuard saves locally on this device. Use More to export a backup and share it through Google Drive.</div>
+<h2>Journey</h2>${S.legs.length?S.legs.map(l=>{const d=chk(l,"dep"),r=chk(l,"arr"),tot=l.people.length+l.bags.length,got=d.pv.size+d.bv.size-d.un.length;return`<div class="card"><div class="row sp"><h3>${e(l.from)} to ${e(l.to)}</h3>${tag(l.kind==="side"?"Side trip":l.kind==="conn"?"Connection":"Leg","mu2")}</div><p class="mu">${e(l.mode)} · ${l.people.length} people · ${l.bags.length} bags</p><div class="bar"><i style="width:${tot?Math.min(100,got/tot*100):0}%"></i></div><p class="mu">Departure ${got}/${tot} checked · Arrival ${r.pv.size+r.bv.size-r.un.length}/${tot}</p></div>`}).join(""):`<div class="card">No legs yet. Open the Trip tab and add your first leg, for example Bengaluru to Vijayawada.</div>`}`},
+people(){return`<h1>People</h1><div class="card"><div class="row"><input id="pn" placeholder="Name" style="flex:1"><select id="pt"><option value="adult">Adult</option><option value="child">Child</option></select></div>
+<div class="row" style="margin-top:8px"><select id="pr"><option value="">Responsible adult (for children)</option>${adults().map(p=>`<option value="${p.id}">${e(p.name)}</option>`).join("")}</select><button class="p" onclick="addPerson()">Add person</button></div><p class="mu">Adults receive a passenger QR. Children can be linked to a responsible adult. Add relatives at any stop.</p></div>
+${S.people.length?S.people.map(p=>{const owned=S.bags.filter(b=>b.owner===p.id),l=cur(),scanned=new Set(S.scans.filter(s=>s.leg===l?.id&&s.cp===sel.cp&&s.type==="B").map(s=>s.id)),expected=owned.filter(b=>l&&l.bags.includes(b.id)),checked=expected.filter(b=>scanned.has(b.id)).length,pending=expected.length-checked;return`<div class="card"><div class="row sp"><div><h3>${e(p.name)}</h3><span class="mu">${p.type==="adult"?"Adult":"Child of "+e((P(p.resp)||{}).name||"unassigned")}</span></div><div class="row">${p.type==="adult"?`<button class="s p" onclick="show('P','${p.id}')">Passenger QR</button>`:""}<button class="s d" onclick="delPerson('${p.id}')">Remove</button></div></div><div class="grid"><div><b>${owned.length}</b><div class="mu">Registered bags</div></div><div><b class="ok">${checked}</b><div class="mu">Checked this checkpoint</div></div><div><b class="wn">${pending}</b><div class="mu">Pending this leg</div></div></div>${owned.map(b=>`<div class="row sp chk"><span>${e(b.label)} · ${e(b.type||"Bag")} ${e(b.colour||"")}</span>${tag(scanned.has(b.id)?"Checked":(expected.includes(b)?"Pending":"Not on this leg"),scanned.has(b.id)?"ok":(expected.includes(b)?"wn":"mu2"))}</div>`).join("")||'<p class="mu">No luggage registered to this person yet.</p>'}</div>`}).join(""):`<div class="card">Add the first traveller above.</div>`}`},
+bags(){const pending=S.qrStock.find(x=>x.token===pendingStockToken&&x.status==="available");return`<h1>Luggage</h1>
+<div class="card"><h3>Register luggage using a preprinted QR</h3><p class="mu">First generate and print unused QR stickers before travelling. When a new bag appears during the trip, scan one unused sticker and then complete its details below.</p>
+${pending?`<div class="msg" style="border-color:var(--ok)">Sticker ${e(pending.label)} selected and ready to assign to a bag.</div>`:`<div class="msg" style="border-color:var(--wn)">No unused sticker selected. Scan a printed unused QR sticker to start registration.</div>`}
+<button class="p wide" onclick="beginBagActivation()">Scan unused luggage QR</button>
+<div class="row" style="margin-top:10px"><select id="bt" style="flex:1"><option>Suitcase</option><option>Trolley bag</option><option>Backpack</option><option>Handbag</option><option>Duffel bag</option><option>Child bag</option><option>Other</option></select><input id="bc" placeholder="Colour" style="flex:1"></div>
+<div class="row" style="margin-top:8px"><select id="bo" style="flex:1"><option value="">Assign owner later</option>${adults().map(p=>`<option value="${p.id}">${e(p.name)}</option>`).join("")}</select></div>
+<input id="bd" class="wide" style="margin-top:8px" placeholder="Description (e.g. navy blue, white ribbon, front pocket)">
+<label class="mu" style="display:block;margin-top:8px">Bag photo (optional)</label><input id="bp" class="wide" type="file" accept="image/*" capture="environment">
+<button class="p wide" style="margin-top:10px" ${pending?"":"disabled"} onclick="addBagForm()">Activate selected QR & save bag</button>
+</div>
+<div class="card row sp"><b>Registered luggage (${S.bags.length})</b><span class="mu">List view</span></div>
+${S.bags.length?S.bags.map(b=>{const[t,c]=st(b),owner=P(b.owner);return`<div class="card"><div class="row sp"><div><h3>${e(b.label)} · ${e(b.type||"Bag")}</h3><span class="mu">${e(b.colour||"Colour not set")} · ${e(owner?.name||"Owner not assigned")}</span></div>${tag(t,c)}</div>${b.photo?`<img class="ph" src="${b.photo}" alt="Photo of ${b.label}">`:""}<p class="mu">${e(b.desc||"No description added")}</p><div class="row"><button class="s p" onclick="show('B','${b.id}')">View QR</button><button class="s" onclick="$('#editOwner${b.id}').style.display='block'">Change owner</button><button class="s d" onclick="delBag('${b.id}')">Delete</button></div><div id="editOwner${b.id}" style="display:none;margin-top:8px"><select onchange="setBag('${b.id}','owner',this.value)"><option value="">Unassigned</option>${adults().map(p=>`<option value="${p.id}" ${b.owner===p.id?"selected":""}>${e(p.name)}</option>`).join("")}</select></div></div>`}).join(""):`<div class="card">No bags registered yet.</div>`}`},
+trip(){return`<h1>Trip</h1><h2>Stay points</h2><div class="card row"><input id="sn" placeholder="e.g. Kashi guesthouse" style="flex:1"><button class="p" onclick="addStay()">Add stay</button></div>
+${S.stays.map(y=>`<div class="card row sp"><b>${e(y.name)}</b><span class="mu">${S.bags.filter(b=>b.stay===y.id).length} bags stored</span></div>`).join("")}
+<h2>Add a leg</h2><div class="card"><div class="row"><input id="lf" placeholder="From" style="flex:1"><input id="lt" placeholder="To" style="flex:1"></div>
+<div class="row" style="margin-top:8px"><select id="lk"><option value="leg">Leg</option><option value="conn">Connection</option><option value="side">Side trip</option></select><select id="lm"><option>Train</option><option>Flight</option><option>Bus</option><option>Cab</option><option>Car</option><option>Other</option></select><button class="p" onclick="addLeg()">Add leg</button></div>
+<p class="mu">A new leg starts with everyone and every bag that isn’t stored. Untick anyone or anything that isn’t travelling.</p></div>
+${S.legs.map((l,n)=>`<details class="card"><summary><b>${n+1}. ${e(l.from)} to ${e(l.to)}</b> ${tag(l.kind==="side"?"Side trip":l.kind==="conn"?"Connection":"Leg","mu2")}<span class="mu"> · ${l.people.length} people, ${l.bags.length} bags</span></summary>
+<h3 style="margin-top:10px">People</h3>${S.people.map(p=>`<label class="chk"><input type="checkbox" ${l.people.includes(p.id)?"checked":""} onchange="tog('${l.id}','people','${p.id}',this.checked)">${e(p.name)}</label>`).join("")||'<span class="mu">None yet</span>'}
+<h3 style="margin-top:10px">Bags</h3>${S.bags.map(b=>`<label class="chk"><input type="checkbox" ${l.bags.includes(b.id)?"checked":""} onchange="tog('${l.id}','bags','${b.id}',this.checked)">${b.label} ${e(b.desc)} ${b.stay?tag("Stored at "+((Y(b.stay)||{}).name||""),"st"):""}</label>`).join("")||'<span class="mu">None yet</span>'}
+<button class="s d" style="margin-top:10px" onclick="delLeg('${l.id}')">Delete leg</button></details>`).join("")}`},
+scan(){const l=cur();return`<h1>Scan</h1>${S.legs.length?`<div class="card"><div class="row"><select onchange="sel.leg=this.value;act=null;msg=null;render()" style="flex:1">${S.legs.map(x=>`<option value="${x.id}" ${l.id===x.id?"selected":""}>${e(x.from)} to ${e(x.to)}</option>`).join("")}</select>
+<select onchange="sel.cp=this.value;msg=null;render()"><option value="dep" ${sel.cp==="dep"?"selected":""}>Departure / loading</option><option value="arr" ${sel.cp==="arr"?"selected":""}>Arrival / unloading</option></select></div>
+<div class="row" style="margin-top:8px"><b>Active adult:</b> ${act?tag(P(act).name,"ok"):tag("none","wn")}<select onchange="act=this.value||null;render()"><option value="">Change adult</option>${adults().map(p=>`<option value="${p.id}">${e(p.name)}</option>`).join("")}</select><button class="s" onclick="act=null;render()">Clear</button></div>
+<div class="row" style="margin-top:8px">${camOn?`<button onclick="cam(false)">Stop camera</button>`:`<button class="p" onclick="cam(true)">Start camera</button>`}<input id="mq2" placeholder="Paste code if the camera fails" style="flex:1"><button class="s" onclick="handle($('#mq2').value)">Check code</button></div></div>
+${msg?`<div class="msg" style="border-color:var(--${msg.c==="ok"?"ok":msg.c==="bad"?"bad":"wn"})">${e(msg.t)}${msg.i?`<br><img class="ph" src="${msg.i}" alt="Scanned bag">`:""}${msg.b?`<br><button class="s p" style="margin-top:8px" onclick="${msg.b[1]}">${e(msg.b[0])}</button>`:""}</div>`:""}`:`<div class="card">Add a leg in the Trip tab first.</div>`}`},
+scan2(){
+ const l=cur();if(!l)return"";
+ const c=chk(l,sel.cp),active=act?P(act):null,ok=!c.pm.length&&!c.bm.length&&!c.un.length;
+ const owned=active?S.bags.filter(b=>b.owner===active.id):[],expected=owned.filter(b=>l.bags.includes(b.id)),checked=expected.filter(b=>c.bv.has(b.id)),pending=expected.filter(b=>!c.bv.has(b.id));
+ const activeRows=owned.map(b=>{const ex=expected.includes(b),done=c.bv.has(b.id);return `<div class="row sp chk"><span>${e(b.label)} · ${e(b.type||"Bag")} ${e(b.colour||"")}</span>${tag(done?"Checked":(ex?"Pending":"Not on this leg"),done?"ok":(ex?"wn":"mu2"))}</div>`}).join("");
+ const personCard=active?`<div class="card"><div class="row sp"><h3>${e(active.name)} – luggage summary</h3>${tag("Selected passenger","ok")}</div><div class="grid"><div><b>${owned.length}</b><div class="mu">Registered bags</div></div><div><b class="ok">${checked.length}</b><div class="mu">Checked</div></div><div><b class="wn">${pending.length}</b><div class="mu">Pending</div></div></div>${activeRows||'<p class="mu">No bags registered for this passenger.</p>'}</div>`:"";
+ const allRows=S.people.map(p=>{const pb=S.bags.filter(b=>b.owner===p.id),ex=pb.filter(b=>l.bags.includes(b.id)),done=ex.filter(b=>c.bv.has(b.id)).length;return `<div class="row sp chk"><span><b>${e(p.name)}</b> <span class="mu">${p.type==="adult"?"Adult":"Child"}</span><br><span class="mu">${pb.length} registered · ${done} checked · ${ex.length-done} pending</span></span>${tag(c.pv.has(p.id)?"Present":"Not checked",c.pv.has(p.id)?"ok":"wn")}</div>`}).join("");
+ const childRows=active?S.people.filter(p=>p.resp===active.id&&l.people.includes(p.id)&&!c.pv.has(p.id)).map(k=>`<div class="row sp chk"><span>${e(k.name)}</span><button class="s p" onclick="manual('P','${k.id}')">Present</button></div>`).join(""):"";
+ const peoplePending=c.pm.map(i=>`<div class="row sp chk"><span>${e(P(i).name)}</span><button class="s" onclick="manual('P','${i}')">Mark present</button></div>`).join("");
+ const bagsPending=c.bm.map(i=>`<div class="row sp chk"><span>${e(B(i).label)} ${e(B(i).desc)}</span><button class="s" onclick="manual('B','${i}')">Mark by hand</button></div>`).join("");
+ const unexpected=c.un.map(i=>`<div class="chk">${e(B(i).label)} ${e(B(i).desc)}</div>`).join("");
+ const stored=c.st.map(b=>`<div class="chk">${e(b.label)} ${e(b.desc)} ${tag("Stored at "+((Y(b.stay)||{}).name||""),"st")}</div>`).join("");
+ // A dedicated, passenger-wise list of bags scanned at the selected checkpoint.
+ const seenBagScans=S.scans.filter(x=>x.leg===l.id&&x.cp===sel.cp&&x.type==="B"&&c.bv.has(x.id));
+ const latestBagScans=[...new Map(seenBagScans.map(x=>[x.id,x])).values()];
+ const scannedByPassenger=S.people.map(p=>{
+   const rows=latestBagScans.filter(x=>{const b=B(x.id);return b&&(b.owner===p.id||(!b.owner&&x.by===p.id));});
+   return {person:p,rows};
+ }).filter(x=>x.rows.length);
+ const unassignedScans=latestBagScans.filter(x=>{const b=B(x.id);return !b||!S.people.some(p=>p.id===(b.owner||x.by));});
+ const scannedBagSection=`<section class="card scanned-section"><div class="section-head"><div><span class="eyebrow">CHECKPOINT ACTIVITY</span><h2>Scanned bags by passenger</h2><p class="mu">Only bags verified at this ${sel.cp==="dep"?"departure":"arrival"} checkpoint are listed here.</p></div><span class="count-pill">${latestBagScans.length} scanned</span></div>${scannedByPassenger.length?scannedByPassenger.map(({person,rows})=>`<div class="passenger-scan-group"><div class="passenger-scan-head"><div class="avatar">${e((person.name||"?").trim().slice(0,1).toUpperCase())}</div><div class="passenger-name"><b>${e(person.name)}</b><span class="mu">${person.type==="adult"?"Adult passenger":"Child passenger"}</span></div><span class="count-pill success-pill">${rows.length} ${rows.length===1?"bag":"bags"}</span></div><div class="scanned-bag-list">${rows.map(x=>{const b=B(x.id);return `<div class="scanned-bag-row"><div class="bag-symbol">🧳</div><div class="bag-info"><b>${e(b.label)} · ${e(b.type||"Bag")}</b><span class="mu">${e(b.desc||b.colour||"Registered luggage")}</span></div>${tag("Scanned","ok")}</div>`}).join("")}</div></div>`).join(""):'<div class="empty-state"><span>🧳</span><b>No luggage scanned yet</b><p class="mu">Scan a passenger’s bag to see it grouped here.</p></div>'}${unassignedScans.length?`<div class="passenger-scan-group"><div class="passenger-scan-head"><b>Unassigned / owner not found</b><span class="count-pill">${unassignedScans.length}</span></div>${unassignedScans.map(x=>{const b=B(x.id);return `<div class="scanned-bag-row"><div class="bag-symbol">🧳</div><div class="bag-info"><b>${e(b?.label||"Unknown bag")}</b><span class="mu">Owner not assigned</span></div>${tag("Scanned","ok")}</div>`}).join("")}</div>`:""}</section>`;
+ return `${childRows?`<div class="card"><b>Confirm children with ${e(active.name)}</b>${childRows}</div>`:""}${personCard}${scannedBagSection}<div class="card"><div class="row sp"><h3>All passengers – overview</h3>${tag("All people","mu2")}</div>${allRows||'<p class="mu">No passengers added.</p>'}</div><div class="card"><div class="row sp"><h3>${sel.cp==="dep"?"Departure":"Arrival"} summary</h3>${tag(ok?"All clear":"Needs attention",ok?"ok":"wn")}</div><p class="mu">People ${c.pv.size}/${l.people.length} · Bags ${l.bags.length-c.bm.length}/${l.bags.length}</p>${peoplePending?`<h3 class="wn">People not checked</h3>${peoplePending}`:""}${bagsPending?`<h3 class="bad">Expected bags not scanned</h3>${bagsPending}`:""}${unexpected?`<h3 class="wn">Scanned, not planned for this leg</h3>${unexpected}`:""}${stored?`<h3 class="st">Stored, not expected (never missing)</h3>${stored}`:""}<p class="mu">A scan is a checklist aid. It does not prove a bag is physically loaded or a person is safe.</p></div>`
+},
+more(){return`<h1>QR inventory, print & share</h1>
+<h2>Prepare QR stickers before travel</h2><div class="card"><p class="mu">Generate a batch of unique, unassigned luggage QR codes at home. Print the labels and keep the unused stickers with you. They contain no personal details.</p>
+<div class="row"><input id="qn" type="number" min="1" max="100" value="30" style="width:100px"><button class="p" onclick="genQrStock()">Generate unused QR codes</button></div>
+<p><b>${S.qrStock.filter(x=>x.status==="available").length}</b> unused · <b>${S.qrStock.filter(x=>x.status==="activated").length}</b> assigned · <b>${S.bags.length}</b> registered bags</p>
+<button class="p wide" onclick="window.print()">Print available QR stickers (A4)</button></div>
+<div id="labels" class="grid">${S.qrStock.filter(x=>x.status==="available").map(x=>`<div class="lbl"><div id="q${x.id}"></div><b>${e(x.label)}</b><span style="font-size:11px">TripGuard · Unassigned</span></div>`).join("")||'<div class="card">No unused QR codes. Generate a batch above.</div>'}</div>
+<h2>QR inventory list</h2><div class="card">${S.qrStock.length?S.qrStock.map(x=>`<div class="row sp chk"><span><b>${e(x.label)}</b><br><span class="mu">${x.status==="available"?"Available sticker":"Assigned to "+e((S.bags.find(b=>b.stockId===x.id)||{}).label||"bag")}</span></span>${tag(x.status==="available"?"Available":"Activated",x.status==="available"?"ok":"mu2")}</div>`).join(""):'<span class="mu">No QR stock created yet.</span>'}</div>
+<h2>Backup and sharing</h2><div class="card"><div class="row"><button class="p" onclick="exportBackup()">Export backup</button><button onclick="shareBackup()">Share backup file</button><button onclick="imp()">Import backup</button><button class="d" onclick="wipe()">Delete all data</button></div>
+<textarea id="bk" rows="7" class="wide" style="margin-top:8px;border:1.5px solid var(--bd);border-radius:10px;background:var(--card);color:var(--tx);box-sizing:border-box" placeholder="Backup JSON appears here when exported. Paste a backup here to import."></textarea>
+<p class="mu">Sharing transfers a snapshot to another device; it does not live-sync different browsers. Photos are included and can make backups large. Keep files private.</p>
+<div class="msg" style="border-color:var(--ac)">This version does not use a backend or hosting server. Google Drive is the shared file store. Updates are synchronized by manual refresh and periodic checks; simultaneous edits can conflict. Google Drive permissions protect access to the shared trip file.</div></div>
+<h2>Google Drive backup & sharing</h2><div class="card">
+<p><b>No Google Cloud setup. No OAuth. No API keys.</b></p>
+<p class="mu">TripGuard keeps working offline on this device. To share a trip with your group, export a backup file, put it in Google Drive, and use Drive's normal Share screen to approve each person's Google account.</p>
+<div class="row"><button class="p" onclick="exportBackup()">Download trip backup</button><button onclick="window.open('https://drive.google.com/drive/my-drive','_blank','noopener')">Open Google Drive</button></div>
+<label class="mu" for="backupFile">Import a TripGuard backup received from Drive</label>
+<input id="backupFile" type="file" accept=".json,application/json" onchange="importBackupFile(this.files[0])" class="wide">
+<p class="mu">After importing, the trip is saved on this device. When someone makes changes, they should export an updated backup and replace the shared file in Drive. Other members then download the latest file and import it.</p>
+<div class="msg" style="border-color:var(--ac)"><b>Owner approval steps</b><br>1. Export the trip backup and upload it to Google Drive.<br>2. In Drive, select the backup file and press <b>Share</b>.<br>3. Add each person's exact Google email. Set Viewer or Editor and send the invitation.<br>4. Only people you add in Drive can open the file. A TripGuard link by itself does not grant access.</div>
+<div class="msg" style="border-color:var(--wn)"><b>Important:</b> This no-server version does not provide automatic multi-phone live sync or an in-app approval dashboard. Drive controls who can open the shared backup; TripGuard imports/exports snapshots. If several people edit, agree who updates the master file to avoid overwriting one another's changes.</div>
+</div>`}};
+function backupObject(){return {schemaVersion:2,exportedAt:new Date().toISOString(),data:S}}
+function exportBackup(){const text=JSON.stringify(backupObject(),null,2);$("#bk").value=text;const blob=new Blob([text],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=`TripGuard-${(S.trip||"Trip").replace(/[^a-z0-9-_]+/gi,"-")}-backup-${new Date().toISOString().slice(0,10)}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+async function shareBackup(){const text=JSON.stringify(backupObject()),file=new File([text],"tripguard-backup.json",{type:"application/json"});if(navigator.share&&navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.share({title:"TripGuard trip backup",text:"Import this backup in TripGuard on the other device.",files:[file]})}catch(_){}}else{exportBackup();alert("Backup downloaded. Send it to the other traveller, then import it in TripGuard.")}}
+function imp(){try{const j=JSON.parse($("#bk").value);if(!j.data||!Array.isArray(j.data.people)||!Array.isArray(j.data.bags))throw 0;S=Object.assign({trip:"",people:[],bags:[],stays:[],legs:[],scans:[],qrStock:[]},j.data);S.qrStock=S.qrStock||[];S.bags=S.bags.map(b=>({...b,type:b.type||"Other",colour:b.colour||"",photo:b.photo||null}));save();msg=null;render()}catch(_){alert("That text is not a valid TripGuard backup.")}}
+async function importBackupFile(file){if(!file)return;try{const j=JSON.parse(await file.text());if(!j.data||!Array.isArray(j.data.people)||!Array.isArray(j.data.bags))throw 0;if(!confirm(`Import trip “${j.data.trip||"My journey"}”? This replaces the trip currently saved on this device.`))return;S=Object.assign({trip:"My journey",people:[],bags:[],stays:[],legs:[],scans:[],qrStock:[]},j.data);S.qrStock=S.qrStock||[];S.bags=S.bags.map(b=>({...b,type:b.type||"Other",colour:b.colour||"",photo:b.photo||null}));save();msg={c:"ok",t:"Trip backup imported and saved on this device."};render()}catch(_){alert("Could not import this file. Choose a valid TripGuard JSON backup.")}finally{const el=document.getElementById("backupFile");if(el)el.value=""}}
+function wipe(){if(confirm("Delete the whole trip from this device?")){S={trip:"My journey",people:[],bags:[],stays:[],legs:[],scans:[],qrStock:[]};act=null;sel.leg="";save();render()}}
+const T=[["home","🏠","Home"],["people","👥","People"],["bags","🧳","Bags"],["trip","🗺️","Trip"],["scan","📷","Scan"],["more","🏷️","More"]];
+function go(t){if(tab==="scan"&&t!=="scan")cam(false);tab=t;msg=null;render();scrollTo(0,0)}
+function render(){$("#nav").innerHTML=T.map(([k,i,n])=>`<button class="${tab===k?"on":""}" onclick="go('${k}')"><span>${i}</span>${n}</button>`).join("");
+$("#v").innerHTML=V[tab]();$("#v2").innerHTML=tab==="scan"?V.scan2():"";$("#cam").style.display=tab==="scan"&&camOn?"block":"none";
+if(tab==="more"){S.qrStock.filter(x=>x.status==="available").forEach(x=>{const el=document.getElementById("q"+x.id);if(el)qr(el,`TRIPGUARD|B|${x.token}`,110)});const notice=document.getElementById("driveAccessNotice");if(notice&&DRIVE.fileId&&DRIVE.ownerEmail&&!DRIVE.isOwner){notice.innerHTML=`<div class="msg" style="border-color:var(--wn)">This is a shared trip. Sign in with the Google account that the administrator approved. If you do not yet have access, <button class="s p" onclick="driveRequestAccess()">Request access by email</button>.</div>`}}}
+window.addEventListener("online",render);window.addEventListener("offline",render);
+(async()=>{const d=await idb("get");if(d&&d.people)S=Object.assign({qrStock:[]},d);S.qrStock=S.qrStock||[];ready=true;if(!navigator.onLine)msg=null;render()})();render();
+if("serviceWorker" in navigator && location.protocol.startsWith("http")){window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}))}
+</script></body></html>
