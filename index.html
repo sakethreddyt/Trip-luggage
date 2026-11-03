@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>TripGuard V7</title>
+    <meta name="theme-color" content="#17365d">
+    <link rel="icon"
+        href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🧳%3C/text%3E%3C/svg%3E">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Figtree:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <main>
+        <div id="v"></div>
+        <div id="cam"></div>
+        <div id="v2"></div>
+    </main>
+    <div id="modal">
+        <div class="card">
+            <h3 id="mt"></h3>
+            <p class="mu" id="ms"></p>
+            <div class="q" id="mq"></div>
+            <div class="row" style="justify-content:center;margin-top:12px"><button class="p" id="mp">🖨 Print this
+                    tag</button><button onclick="$('#modal').style.display='none'">Close</button></div>
+        </div>
+    </div>
+    <div id="flowModal" role="dialog" aria-modal="true" aria-labelledby="flowTitle">
+        <div class="card">
+            <h2 id="flowTitle" style="margin-top:0"></h2>
+            <div id="flowBody"></div>
+        </div>
+    </div>
+    <div id="pr"></div>
+    <nav id="nav"></nav>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>
